@@ -11,15 +11,12 @@ import com.codecool.customannotations.webroute.WebRoute;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-
-import static javax.xml.xpath.XPathFactory.newInstance;
-
 public class Test {
 
         public static void main(String[] args) throws Exception {
                 HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
                 server.createContext("/test", new MyHandler("randomString"));
-                server.setExecutor(null); // creates a default executor
+                server.setExecutor(null);
 
                 HashMap<String, Method> routes = new HashMap<>();
                 for(Method m: Routes.class.getMethods()) {
@@ -34,9 +31,8 @@ public class Test {
                         Method method = type.getMethod(entry.getValue().getName(), null);
                         Routes instance = new Routes();
                         String stringReturn = (String) method.invoke(instance, null);
-                        System.out.println(stringReturn);
                         server.createContext(entry.getKey(), new MyHandler(stringReturn));
-                        server.setExecutor(null); // creates a default executor
+                        server.setExecutor(null);
                 }
 
                 server.start();
@@ -44,7 +40,7 @@ public class Test {
         }
 
         static class MyHandler implements HttpHandler {
-                String resVal = "";
+                String resVal;
                 MyHandler(String respVal){
                         this.resVal = respVal;
                 }
